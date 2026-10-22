@@ -1,0 +1,14 @@
+{
+  "id": "letargia-simple-construct",
+  "title": "LETARGIA SIMPLE CONSTRUCT",
+  "description": "Monte mapas direto na cena usando imagens modulares (tiles) em três camadas visuais: Piso, Estrutura e Decoração. Somente para o mestre.",
+  "version": "1.0.0",
+  "authors": [{ "name": "LETARGIA" }],
+  "compatibility": { "minimum": "13", "maximum": "13" },
+  "esmodules": ["scripts/main.js"],
+  "styles": ["styles/construct.css"],
+  "languages": [
+    { "lang": "pt-BR", "name": "Português (Brasil)", "path": "lang/pt-BR.json" },
+    { "lang": "en", "name": "English (texto em pt-BR)", "path": "lang/pt-BR.json" }
+  ]
+}

@@ -1,0 +1,94 @@
+<section class="lsc">
+  {{#unless hasScene}}<p class="lsc-note lsc-warn"><i class="fa-solid fa-triangle-exclamation"></i> {{localize "LSC.Err.NoScene"}}</p>{{/unless}}
+
+  <div class="lsc-row">
+    <button type="button" data-action="pickImage"><i class="fa-solid fa-image"></i> {{localize "LSC.PickImage"}}</button>
+    <button type="button" data-action="toggleSets" class="{{#if showSets}}active{{/if}}"><i class="fa-solid fa-layer-group"></i> {{localize "LSC.Tileset"}}</button>
+  </div>
+
+  <div class="lsc-row lsc-layers" title="{{localize 'LSC.LayerFor'}}">
+    {{#each layers}}<button type="button" data-action="setLayer" data-layer="{{key}}" class="{{#if active}}active{{/if}}">{{label}}</button>{{/each}}
+  </div>
+
+  {{#if src}}
+  <div class="lsc-piece">
+    <img class="lsc-preview" src="{{srcUrl}}" draggable="true" data-src="{{src}}" data-name="{{srcName}}" title="{{localize 'LSC.DragHint'}}" alt="">
+    <div class="lsc-piece-side">
+      <div class="lsc-name" title="{{src}}">{{srcName}}</div>
+      <div class="lsc-row">
+        <button type="button" data-action="place" class="{{#if placing}}active{{/if}}">
+          {{#if placing}}<i class="fa-solid fa-xmark"></i> {{localize "LSC.Cancel"}}{{else}}<i class="fa-solid fa-location-crosshairs"></i> {{localize "LSC.Place"}}{{/if}}
+        </button>
+        {{#if currentSet}}<button type="button" data-action="addCurrent" class="lsc-sq" title="{{localize 'LSC.AddCurrent'}}"><i class="fa-solid fa-plus"></i></button>{{/if}}
+      </div>
+    </div>
+  </div>
+  {{#if placing}}<p class="lsc-note">{{localize "LSC.PlacingHint"}}</p>{{/if}}
+  {{else}}
+  <p class="lsc-note">{{localize "LSC.Empty"}}</p>
+  {{/if}}
+
+  {{#if showSets}}
+  <fieldset class="lsc-sets">
+    <div class="lsc-row">
+      <select name="setId">
+        <option value="">{{localize "LSC.NoSet"}}</option>
+        {{#each sets}}<option value="{{id}}" {{#if selected}}selected{{/if}}>{{name}}</option>{{/each}}
+      </select>
+      <button type="button" data-action="deleteSet" class="lsc-sq" title="{{localize 'LSC.DeleteSet'}}" {{#unless currentSet}}disabled{{/unless}}><i class="fa-solid fa-trash"></i></button>
+    </div>
+    <div class="lsc-row">
+      <input type="text" name="newSetName" maxlength="60" placeholder="{{localize 'LSC.NewSetName'}}">
+      <button type="button" data-action="newSet" class="lsc-sq" title="{{localize 'LSC.CreateSet'}}"><i class="fa-solid fa-plus"></i></button>
+    </div>
+    {{#if currentSet}}
+    <button type="button" data-action="addToSet"><i class="fa-solid fa-file-circle-plus"></i> {{localize "LSC.AddImage"}}</button>
+    <div class="lsc-thumbs">
+      {{#each items}}
+      <div class="lsc-thumb" draggable="true" data-action="placeThumb" data-src="{{src}}" data-name="{{name}}" title="{{name}}">
+        <img src="{{url}}" loading="lazy" decoding="async" draggable="false" alt="">
+        <button type="button" class="lsc-x" data-action="removeThumb" data-id="{{id}}" title="{{localize 'LSC.RemoveRef'}}"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      {{else}}
+      <p class="lsc-note">{{localize "LSC.SetEmpty"}}</p>
+      {{/each}}
+    </div>
+    {{/if}}
+  </fieldset>
+  {{/if}}
+
+  <hr>
+
+  {{#if active}}
+  <div class="lsc-active">
+    <div class="lsc-active-head"><strong class="lsc-name">{{active.name}}</strong> <span class="lsc-tag">{{active.layerLabel}}</span></div>
+    <div class="lsc-row lsc-tools">
+      <button type="button" data-action="scaleDown" title="{{localize 'LSC.ScaleDown'}}" {{#if active.locked}}disabled{{/if}}><i class="fa-solid fa-magnifying-glass-minus"></i></button>
+      <button type="button" data-action="scaleUp" title="{{localize 'LSC.ScaleUp'}}" {{#if active.locked}}disabled{{/if}}><i class="fa-solid fa-magnifying-glass-plus"></i></button>
+      <button type="button" data-action="rotateCCW" title="{{localize 'LSC.RotCCW'}}" {{#if active.locked}}disabled{{/if}}><i class="fa-solid fa-rotate-left"></i></button>
+      <button type="button" data-action="rotateCW" title="{{localize 'LSC.RotCW'}}" {{#if active.locked}}disabled{{/if}}><i class="fa-solid fa-rotate-right"></i></button>
+      <button type="button" data-action="toggleLock" class="lsc-lock {{#if active.locked}}locked{{/if}}" title="{{#if active.locked}}{{localize 'LSC.Unlock'}}{{else}}{{localize 'LSC.Lock'}}{{/if}}"><i class="fa-solid {{#if active.locked}}fa-lock{{else}}fa-lock-open{{/if}}"></i></button>
+    </div>
+    {{#if active.locked}}<p class="lsc-note">{{localize "LSC.Locked"}}</p>{{/if}}
+  </div>
+  {{/if}}
+
+  <div class="lsc-row lsc-levels" title="{{localize 'LSC.LevelsHint'}}">
+    <label>{{localize "LSC.Floor"}} <input type="number" name="bottom" step="any" value="{{bottom}}" {{#if levelsDisabled}}disabled{{/if}}></label>
+    {{#if levelsActive}}<label>{{localize "LSC.Height"}} <input type="number" name="top" step="any" value="{{top}}" {{#if levelsDisabled}}disabled{{/if}}></label>{{/if}}
+  </div>
+
+  <div class="lsc-list-title">{{localize "LSC.List"}} ({{tiles.length}})</div>
+  <ul class="lsc-list">
+    {{#each tiles}}
+    <li><button type="button" data-action="selectTile" data-id="{{id}}" class="{{#if active}}active{{/if}}">
+      <i class="fa-solid {{#if locked}}fa-lock{{else}}fa-lock-open{{/if}}"></i>
+      <span class="lsc-li-name">{{name}}</span><span class="lsc-tag">{{layerLabel}}</span>
+    </button></li>
+    {{else}}
+    <li class="lsc-note">{{localize "LSC.ListEmpty"}}</li>
+    {{/each}}
+  </ul>
+
+  <p class="lsc-note lsc-foot">{{localize "LSC.Hint"}}</p>
+</section>
